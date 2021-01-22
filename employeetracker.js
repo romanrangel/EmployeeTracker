@@ -47,10 +47,10 @@ function afterConnection() {
             case 'View all employees': viewEmployee();
                 break;
 
-            case 'View all employees by department': viewByDepartment();
+            case 'View all departments': viewByDepartment();
                 break;
 
-            case 'View all employees by roles': viewRoles();
+            case 'View all roles': viewRoles();
                 break;
 
             case 'Add an employee': addEmployee();
@@ -136,7 +136,7 @@ function afterConnection() {
         });
     }
     function addRole() {
-        connection.query('INSERT TO roles', (err, res) => {
+        connection.query('INSERT TO role', (err, res) => {
             if (err) {
                 throw err;
             }
@@ -166,7 +166,7 @@ function afterConnection() {
     }
 
     function updateRoles() {
-        connection.query('INSERT TO roles', (err, res) => {
+        connection.query('INSERT TO role', (err, res) => {
             inquirer.prompt([
                 {
                     name: 'rolename',
