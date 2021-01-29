@@ -59,10 +59,10 @@ function afterConnection() {
             case 'Add a department': addDepartment();
                 break;
 
-            case 'Update employee role': addRole();
+            case 'Update employee role': updateRoles();
                 break;
 
-            case 'Add a role': updateRoles();
+            case 'Add a role': addRole();
                 break;
 
             default:
@@ -101,98 +101,126 @@ function afterConnection() {
         });
     }
     function addEmployee() {
-        connection.query('INSERT TO employee', (err, res) => {
-            inquirer.prompt([
-                {
-                    name: 'employfirstname',
-                    type: 'input',
-                    message: 'What is the new employees first name?'
-                }, {
-                    name: 'employlastname',
-                    type: 'input',
-                    message: 'What is the new employees last name?'
-                }, {
-                    name: 'roleid',
-                    type: 'input',
-                    message: 'What is the new employees role id?'
-                },
+        inquirer.prompt([
+            {
+                name: 'employfirstname',
+                type: 'input',
+                message: 'What is the new employees first name?'
+            }, {
+                name: 'employlastname',
+                type: 'input',
+                message: 'What is the new employees last name?'
+            }, {
+                name: 'roleid',
+                type: 'input',
+                message: 'What is the new employees role id?'
+            },
 
-            ]).then(function (answer) {
-                connection.query("INSERT INTO employee SET ?", {
-                    first_name: answer.emlpoyfirstname,
-                    last_name: answer.employlastname,
-                    role_id: answer.roleid
-                }, function (error) {
-                    if (error) 
-                        throw err;
-                    
+        ]).then(function (answer) {
+            connection.query("INSERT INTO employee SET ?", {
+                first_name: answer.employfirstname,
+                last_name: answer.employlastname,
+                role_id: answer.roleid
+            }, function (err) {
+                if (err) 
+                    throw err;
+                
 
 
-                    console.log("Employee added successfully!");
-                    console.table(res);
-                    afterConnection();
-                });
+                console.log("Employee added successfully!");
+                console.table(answer);
+                afterConnection();
             });
         });
     }
     function addRole() {
-        connection.query('INSERT TO role', (err, res) => {
-            if (err) {
-                throw err;
+        inquirer.prompt([
+            {
+                name: 'rolename',
+                type: 'input',
+                message: 'What is the new role?'
+            }, {
+                name: "salaryinput",
+                type: "input",
+                message: "What is the salary?"
+            },
+
+        ]).then(function (answer) { // when finished prompting, insert a new item into the db with that info
+            connection.query("INSERT INTO role SET ?", {
+                title: answer.rolename,
+                salary: answer.salaryinput
+            }, function (error) {
+                if (error) 
+                    throw error;
+                
+
+
+                console.log("Role added successfully!");
+                console.table(answer);
+                afterConnection();
+            });
+        });
+    };
+}
+
+function addDepartment() {
+    connection.query('INSERT TO department', (err, res) => {
+        inquirer.prompt([{
+                name: 'deparname',
+                type: 'input',
+                message: 'What is the new department name?'
+            }]).then(function (answer) { // when finished prompting, insert a new item into the db with that info
+            connection.query("INSERT INTO department SET ?", {
+                name: answer.deparname
+            }, function (error) {
+                if (error) 
+                    throw err;
+                
+
+                console.log("Department added successfully!");
+                console.table(res);
+                afterConnection();
+            });
+        });
+    });
+}
+
+function updateRoles() {
+    inquirer.prompt([
+        {
+            name: 'rolename',
+            type: 'input',
+            message: 'What is the new role?'
+        }, {
+            name: "salaryinput",
+            type: "input",
+            message: "What is the salary?"
+        },
+        {
+            name: "idinput",
+            type: "input",
+            message: "What is the role id?"
+        },
+
+    ]).then(function (answer) { // when finished prompting, insert a new item into the db with that info
+        connection.query("UPDATE role SET ? WHERE ?", [
+            {
+                title: answer.rolename,
+                salary: answer.salaryinput
+            },
+            {
+                id: answer.idinput
             }
-            console.table(res);
+        ]
+        , function (error) {
+            if (error) 
+                throw error;
+            
+
+
+            console.log("Role updated successfully!");
+            console.table(answer);
             afterConnection();
         });
-    }
-    function addDepartment() {
-        connection.query('INSERT TO department', (err, res) => {
-            inquirer.prompt([{
-                    name: 'deparname',
-                    type: 'input',
-                    message: 'What is the new department name?'
-                }]).then(function (answer) { // when finished prompting, insert a new item into the db with that info
-                connection.query("INSERT INTO department SET ?", {
-                    name: answer.deparname
-                }, function (error) {
-                    if (error) 
-                        throw err;
-
-                    console.log("Department added successfully!");
-                    console.table(res);
-                    afterConnection();
-                });
-            });
-        });
-    }
-
-    function updateRoles() {
-        connection.query('INSERT TO role', (err, res) => {
-            inquirer.prompt([
-                {
-                    name: 'rolename',
-                    type: 'input',
-                    message: 'What is the new role?'
-                }, {
-                    name: "salaryinput",
-                    type: "input",
-                    message: "What is the salary?"
-                },
-
-            ]).then(function (answer) { // when finished prompting, insert a new item into the db with that info
-                connection.query("INSERT INTO role SET ?", {
-                    title: answer.rolename,
-                    salary: answer.salaryinput
-                }, function (error) {
-                    if (error) 
-                        throw err;
-                    
-
-
-                    console.log("Role added successfully!");
-                    console.table(res);
-                    afterConnection();
-                });
-            });
-        });
-    }
-}
+    });
+};
